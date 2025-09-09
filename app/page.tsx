@@ -12,7 +12,14 @@ import {
   getHoldingsByAssetType,
   loadPortfolioData,
 } from "@/lib/portfolio-utils";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Calendar } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Home() {
   const [portfolioData, setPortfolioData] = useState<DailyPortfolioSnapshot[]>(
@@ -20,6 +27,7 @@ export default function Home() {
   );
   const [currentSnapshot, setCurrentSnapshot] =
     useState<DailyPortfolioSnapshot | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,6 +39,7 @@ export default function Home() {
       setPortfolioData(data);
       const recent = getMostRecentSnapshot(data);
       setCurrentSnapshot(recent);
+      setSelectedDate(recent?.date || "");
     } catch (err) {
       setError("Failed to load portfolio data");
       console.error(err);
@@ -38,6 +47,17 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+    const snapshot = portfolioData.find((data) => data.date === date);
+    setCurrentSnapshot(snapshot || null);
+  };
+
+  // Sort portfolio data by date (most recent first) for the selector
+  const sortedPortfolioData = [...portfolioData].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 
   useEffect(() => {
     loadData();
@@ -84,23 +104,55 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8 px-4">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
               Portfolio Dashboard
             </h1>
             <p className="text-muted-foreground">
-              Last updated:{" "}
+              Viewing snapshot from:{" "}
               {new Date(currentSnapshot.date).toLocaleDateString()}
             </p>
           </div>
-          <button
-            onClick={loadData}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-          >
-            <RefreshCw className="h-4 w-4" />
-            <span>Refresh</span>
-          </button>
+
+          <div className="flex items-center gap-4">
+            {/* Date Selector */}
+            <div className="flex items-center space-x-2">
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <Select value={selectedDate} onValueChange={handleDateChange}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Select date" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortedPortfolioData.map((snapshot) => (
+                    <SelectItem key={snapshot.date} value={snapshot.date}>
+                      {new Date(snapshot.date).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                      {snapshot.date ===
+                        getMostRecentSnapshot(portfolioData)?.date && (
+                        <span className="ml-2 text-xs text-green-600">
+                          (Latest)
+                        </span>
+                      )}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Refresh Button */}
+            <button
+              onClick={loadData}
+              className="flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+            >
+              <RefreshCw className="h-4 w-4" />
+              <span>Refresh</span>
+            </button>
+          </div>
         </div>
 
         {/* Portfolio Summary */}
