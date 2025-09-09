@@ -1,7 +1,7 @@
 // Base reusable types
-type Currency = "ARS" | "USD";
-type InvestmentType = "Equities" | "Bonds" | "CEDEARS" | "Notes";
-type SettlementTerm =
+export type Currency = "ARS" | "USD";
+export type InvestmentType = "Equities" | "Bonds" | "CEDEARS" | "Notes";
+export type SettlementTerm =
   | "Immediate"
   | "24h"
   | "24h+"
