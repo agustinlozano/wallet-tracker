@@ -54,6 +54,13 @@ export default function Home() {
     setCurrentSnapshot(snapshot || null);
   };
 
+  // create Date at local midnight from an ISO date (YYYY-MM-DD) to avoid UTC shift
+  const toLocalDate = (isoDate: string) => {
+    if (!isoDate) return new Date(NaN);
+    const [y, m, d] = isoDate.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  };
+
   // Sort portfolio data by date (most recent first) for the selector
   const sortedPortfolioData = [...portfolioData].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -111,7 +118,7 @@ export default function Home() {
             </h1>
             <p className="text-muted-foreground">
               Viewing snapshot from:{" "}
-              {new Date(currentSnapshot.date).toLocaleDateString()}
+              {toLocalDate(currentSnapshot.date).toLocaleDateString()}
             </p>
           </div>
 
@@ -126,7 +133,7 @@ export default function Home() {
                 <SelectContent>
                   {sortedPortfolioData.map((snapshot) => (
                     <SelectItem key={snapshot.date} value={snapshot.date}>
-                      {new Date(snapshot.date).toLocaleDateString("en-US", {
+                      {toLocalDate(snapshot.date).toLocaleDateString("en-US", {
                         weekday: "short",
                         year: "numeric",
                         month: "short",
