@@ -170,7 +170,7 @@ export default function Home() {
         </div>
 
         {/* Asset Allocation and Account Balances */}
-        <div className="grid gap-8 md:grid-cols-2 mb-8">
+        <div className="grid gap-4 md:grid-cols-2 mb-8">
           <AssetAllocationChart assetData={assetData} />
           <AccountBalancesCard
             balances={currentSnapshot.accountBalancesTable.rows}
