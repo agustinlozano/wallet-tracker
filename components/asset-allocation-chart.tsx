@@ -28,27 +28,27 @@ interface AssetAllocationChartProps {
 const chartConfig = {
   Equities: {
     label: "Equities",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
   Bonds: {
     label: "Bonds",
-    color: "hsl(var(--chart-2))",
+    color: "var(--chart-2)",
   },
   CEDEARS: {
     label: "CEDEARS",
-    color: "hsl(var(--chart-3))",
+    color: "var(--chart-3)",
   },
   Notes: {
     label: "Notes",
-    color: "hsl(var(--chart-4))",
+    color: "var(--chart-4)",
   },
 } satisfies ChartConfig;
 
 const COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
 ];
 
 export function AssetAllocationChart({ assetData }: AssetAllocationChartProps) {
